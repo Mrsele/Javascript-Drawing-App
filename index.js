@@ -1,7 +1,7 @@
 const canvas = document.getElementById('drawing-board');
 const toolbar = document.getElementById('toolbar');
 const ctx = canvas.getContext('2d');
-
+let drawingHistory = [];
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
@@ -29,7 +29,20 @@ toolbar.addEventListener('change', e => {
     }
     
 });
+////////////////////////////////
 
+toolbar.addEventListener('click', e => {
+    if (e.target.id === 'clear') {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawingHistory = [];
+    }
+
+    if (e.target.id === 'undo') {
+        undo();
+    }
+});
+
+/////////////////////////////////////////////////////////
 const draw = (e) => {
     if(!isPainting) {
         return;
@@ -55,3 +68,17 @@ canvas.addEventListener('mouseup', e => {
 });
 
 canvas.addEventListener('mousemove', draw);
+
+
+function undo(){
+
+if(drawingHistory.length>1){
+
+    drawingHistory.pop();
+    ctx.putImageData(drawingHistory[drawingHistory.length - 1], 0, 0);
+}  else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawingHistory = [];
+
+}
+}
